@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Mock database for now
 interface User {
@@ -9,7 +11,20 @@ interface User {
   createdAt: string;
 }
 
-const users: User[] = [];
+const USERS_FILE = path.join(process.cwd(), 'users.json');
+
+async function loadUsers(): Promise<User[]> {
+  try {
+    const data = await fs.readFile(USERS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+async function saveUsers(users: User[]): Promise<void> {
+  await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,6 +36,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const users = await loadUsers();
 
     // Check if user already exists
     const existingUser = users.find(user => user.email === email);
@@ -41,6 +58,7 @@ export async function POST(request: NextRequest) {
     };
 
     users.push(user);
+    await saveUsers(users);
 
     return NextResponse.json({
       message: 'User created successfully',

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Mock database (same as register)
 interface User {
@@ -9,7 +11,16 @@ interface User {
   createdAt: string;
 }
 
-const users: User[] = [];
+const USERS_FILE = path.join(process.cwd(), 'users.json');
+
+async function loadUsers(): Promise<User[]> {
+  try {
+    const data = await fs.readFile(USERS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,6 +32,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const users = await loadUsers();
 
     // Find user
     const user = users.find(user => user.email === email && user.password === password);
