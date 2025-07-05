@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  bio       String?
+  website   String?
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  portfolios        Portfolio[]
+  socialConnections SocialConnection[]
+  sessions         Session[]
+
+  @@map("users")
+}
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  template    String   @default("modern")
+  slug        String   @unique
+  isPublic    Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId            String @map("user_id")
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections          PortfolioSection[]
+  socialConnections SocialConnection[]
+
+  @@map("portfolios")
+}
+
+model PortfolioSection {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  order       Int
+  type        String   // about, experience, projects, skills, contact
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  portfolioId String    @map("portfolio_id")
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("portfolio_sections")
+}
+
+model SocialConnection {
+  id          String   @id @default(cuid())
+  platform    String   // github, linkedin, twitter
+  username    String?
+  accessToken String?
+  profileData Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId     String @map("user_id")
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  portfolioId String? @map("portfolio_id")
+  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, platform])
+  @@map("social_connections")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String?
+  liveUrl     String?
+  githubUrl   String?
+  technologies String[]
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  portfolioId String    @map("portfolio_id")
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  name     String
+  category String // frontend, backend, tools, languages
+  level    Int    // 1-5
+  icon     String?
+
+  // Relations
+  portfolioId String    @map("portfolio_id")
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("skills")
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  isCurrent   Boolean  @default(false)
+  description String
+  achievements String[]
+
+  // Relations
+  portfolioId String    @map("portfolio_id")
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
+}
