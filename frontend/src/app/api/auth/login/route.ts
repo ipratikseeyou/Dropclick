@@ -1,26 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-
-// Mock database (same as register)
-interface User {
-  id: string;
-  email: string;
-  password: string;
-  name: string;
-  createdAt: string;
-}
-
-const USERS_FILE = path.join(process.cwd(), 'users.json');
-
-async function loadUsers(): Promise<User[]> {
-  try {
-    const data = await fs.readFile(USERS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,18 +7,29 @@ export async function POST(request: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing email or password' },
         { status: 400 }
       );
     }
 
-    const users = await loadUsers();
+    // Find user by email
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, email, password, name')
+      .eq('email', email)
+      .single();
 
-    // Find user
-    const user = users.find(user => user.email === email && user.password === password);
-    if (!user) {
+    if (error || !user) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
+        { error: 'Invalid email or password' },
+        { status: 401 }
+      );
+    }
+
+    // Check password (in production, use bcrypt.compare)
+    if (user.password !== password) {
+      return NextResponse.json(
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }

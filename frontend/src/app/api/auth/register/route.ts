@@ -1,30 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-
-// Mock database for now
-interface User {
-  id: string;
-  email: string;
-  password: string;
-  name: string;
-  createdAt: string;
-}
-
-const USERS_FILE = path.join(process.cwd(), 'users.json');
-
-async function loadUsers(): Promise<User[]> {
-  try {
-    const data = await fs.readFile(USERS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveUsers(users: User[]): Promise<void> {
-  await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
-}
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,10 +12,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const users = await loadUsers();
-
     // Check if user already exists
-    const existingUser = users.find(user => user.email === email);
+    const { data: existingUser, error: checkError } = await supabase
+      .from('users')
+      .select('email')
+      .eq('email', email)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Database check error:', checkError);
+      return NextResponse.json(
+        { error: 'Database error' },
+        { status: 500 }
+      );
+    }
+
     if (existingUser) {
       return NextResponse.json(
         { error: 'User already exists' },
@@ -48,24 +34,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user (without password hashing for now)
-    const user: User = {
-      id: Date.now().toString(),
-      email,
-      password, // In production, hash this
-      name,
-      createdAt: new Date().toISOString()
-    };
+    // Create user (in production, hash the password)
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert([
+        {
+          email,
+          password, // In production, hash this with bcrypt
+          name,
+        }
+      ])
+      .select('id, email, name, created_at')
+      .single();
 
-    users.push(user);
-    await saveUsers(users);
+    if (insertError) {
+      console.error('User creation error:', insertError);
+      return NextResponse.json(
+        { error: 'Failed to create user' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       message: 'User created successfully',
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name
       }
     }, { status: 201 });
   } catch (error) {
