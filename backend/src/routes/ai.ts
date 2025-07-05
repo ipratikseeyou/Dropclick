@@ -7,9 +7,9 @@ const router = express.Router();
 // AI processing routes (all require authentication)
 router.use(authMiddleware);
 
-router.post('/analyze-profile', aiController.analyzeProfile);
+router.post('/analyze-social', aiController.analyzeSocialData);
 router.post('/generate-content', aiController.generateContent);
-router.post('/suggest-improvements', aiController.suggestImprovements);
 router.post('/optimize-portfolio', aiController.optimizePortfolio);
+router.post('/transform-portfolio', aiController.transformPortfolio);
 
 export default router; 

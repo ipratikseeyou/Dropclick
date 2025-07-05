@@ -51,6 +51,9 @@ model Portfolio {
   user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   sections          PortfolioSection[]
   socialConnections SocialConnection[]
+  projects          Project[]
+  skills            Skill[]
+  experiences       Experience[]
 
   @@map("portfolios")
 }
