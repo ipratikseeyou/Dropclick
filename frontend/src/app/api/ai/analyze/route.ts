@@ -33,8 +33,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Mock AI analysis - in production, this would call OpenAI, Claude, or similar
-    const analysis = await performAIAnalysis(profiles, preferences);
+    // Check if OpenAI API key is available
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    if (!openaiApiKey) {
+      return NextResponse.json(
+        { error: 'OpenAI API key not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Perform real AI analysis using OpenAI
+    const analysis = await performAIAnalysis(profiles, preferences, openaiApiKey);
 
     return NextResponse.json({
       success: true,
@@ -50,16 +59,135 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function performAIAnalysis(profiles: SocialProfile[], preferences: any): Promise<{
+async function performAIAnalysis(
+  profiles: SocialProfile[], 
+  preferences: any, 
+  apiKey: string
+): Promise<{
   summary: string;
   sections: PortfolioSection[];
   skills: string[];
   recommendations: string[];
 }> {
-  // Simulate AI processing delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // Create a comprehensive prompt for OpenAI
+  const profileDescriptions = profiles.map(profile => {
+    switch (profile.platform) {
+      case 'github':
+        return `GitHub profile: ${profile.username} - Likely a developer with technical skills`;
+      case 'linkedin':
+        return `LinkedIn profile: ${profile.username} - Professional background and experience`;
+      case 'twitter':
+        return `Twitter profile: ${profile.username} - Social presence and community engagement`;
+      default:
+        return `${profile.platform} profile: ${profile.username}`;
+    }
+  }).join(', ');
 
-  // Mock AI-generated content based on profiles
+  const prompt = `Analyze the following social profiles and generate a professional portfolio:
+
+Profiles: ${profileDescriptions}
+
+Preferences:
+- Tone: ${preferences.tone}
+- Focus: ${preferences.focus}
+- Length: ${preferences.length}
+
+Please provide:
+1. A professional summary (2-3 sentences)
+2. 4 portfolio sections: About Me, Professional Experience, Featured Projects, Technical Skills
+3. A list of 5-8 relevant skills
+4. 3 specific recommendations for portfolio improvement
+
+Format the response as JSON with this structure:
+{
+  "summary": "professional summary here",
+  "sections": [
+    {
+      "type": "about",
+      "title": "About Me",
+      "content": "content here",
+      "order": 1
+    },
+    {
+      "type": "experience", 
+      "title": "Professional Experience",
+      "content": "content here",
+      "order": 2
+    },
+    {
+      "type": "projects",
+      "title": "Featured Projects", 
+      "content": "content here",
+      "order": 3
+    },
+    {
+      "type": "skills",
+      "title": "Technical Skills",
+      "content": "content here", 
+      "order": 4
+    }
+  ],
+  "skills": ["skill1", "skill2", "skill3"],
+  "recommendations": ["recommendation1", "recommendation2", "recommendation3"]
+}
+
+Make the content professional, engaging, and tailored to the specified tone and focus area.`;
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional portfolio writer and career consultant. Generate high-quality, personalized portfolio content based on social profile information.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiResponse = data.choices[0]?.message?.content;
+
+    if (!aiResponse) {
+      throw new Error('No response from OpenAI');
+    }
+
+    // Parse the JSON response from AI
+    const parsedAnalysis = JSON.parse(aiResponse);
+
+    return {
+      summary: parsedAnalysis.summary,
+      sections: parsedAnalysis.sections,
+      skills: parsedAnalysis.skills,
+      recommendations: parsedAnalysis.recommendations
+    };
+
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    
+    // Fallback to mock data if OpenAI fails
+    return await generateMockAnalysis(profiles, preferences);
+  }
+}
+
+// Fallback mock analysis function
+async function generateMockAnalysis(profiles: SocialProfile[], preferences: any) {
   const githubProfile = profiles.find(p => p.platform === 'github');
   const linkedinProfile = profiles.find(p => p.platform === 'linkedin');
   const twitterProfile = profiles.find(p => p.platform === 'twitter');
@@ -83,7 +211,6 @@ async function performAIAnalysis(profiles: SocialProfile[], preferences: any): P
     summary += 'Active in the tech community with strong networking skills. ';
   }
 
-  // Generate portfolio sections
   const sections: PortfolioSection[] = [
     {
       type: 'about',
@@ -115,7 +242,6 @@ async function performAIAnalysis(profiles: SocialProfile[], preferences: any): P
     }
   ];
 
-  // Generate recommendations
   if (githubProfile) {
     recommendations.push('Add more detailed project descriptions to showcase technical expertise');
   }
@@ -129,7 +255,7 @@ async function performAIAnalysis(profiles: SocialProfile[], preferences: any): P
   return {
     summary,
     sections,
-    skills: [...new Set(skills)], // Remove duplicates
+    skills: [...new Set(skills)],
     recommendations
   };
 } 
