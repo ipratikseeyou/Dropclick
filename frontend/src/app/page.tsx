@@ -47,9 +47,12 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4">
-                Watch Demo
-              </Button>
+              <Link href="/ai-generate">
+                <Button variant="outline" size="lg" className="text-lg px-8 py-4">
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Try AI Generator
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -129,6 +132,57 @@ export default function HomePage() {
                 Never worry about outdated information again.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Section */}
+      <section className="py-20 bg-blue-600">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-center mb-6">
+              <Sparkles className="h-12 w-12 text-white mr-4" />
+              <h2 className="text-4xl font-bold text-white">
+                Powered by Advanced AI
+              </h2>
+            </div>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Our AI analyzes your social profiles, understands your expertise, and generates 
+              personalized portfolio content that truly represents your professional journey.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-white mb-3">Smart Analysis</h3>
+                <p className="text-blue-100">
+                  AI analyzes your GitHub repositories, LinkedIn experience, and Twitter activity 
+                  to understand your skills and achievements.
+                </p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-white mb-3">Personalized Content</h3>
+                <p className="text-blue-100">
+                  Generate content that matches your preferred tone, focus area, and style 
+                  to create a portfolio that feels authentically you.
+                </p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
+                <h3 className="text-xl font-semibold text-white mb-3">Smart Recommendations</h3>
+                <p className="text-blue-100">
+                  Get AI-powered suggestions to improve your portfolio and enhance your 
+                  professional presence across platforms.
+                </p>
+              </div>
+            </div>
+            
+            <Link href="/ai-generate">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
+                <Sparkles className="mr-2 h-5 w-5" />
+                Try AI Generator Now
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
