@@ -182,12 +182,12 @@ Make the content professional, engaging, and tailored to the specified tone and 
     console.error('OpenAI API error:', error);
     
     // Fallback to mock data if OpenAI fails
-    return await generateMockAnalysis(profiles, preferences);
+    return await generateMockAnalysis(profiles);
   }
 }
 
 // Fallback mock analysis function
-async function generateMockAnalysis(profiles: SocialProfile[], preferences: AnalysisRequest['preferences']) {
+async function generateMockAnalysis(profiles: SocialProfile[]) {
   const githubProfile = profiles.find(p => p.platform === 'github');
   const linkedinProfile = profiles.find(p => p.platform === 'linkedin');
   const twitterProfile = profiles.find(p => p.platform === 'twitter');
