@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { 
   Plus, 
@@ -13,7 +12,8 @@ import {
   Eye,
   Edit,
   Trash2,
-  ExternalLink
+  ExternalLink,
+  LogOut
 } from 'lucide-react';
 
 export default function DashboardPage() {

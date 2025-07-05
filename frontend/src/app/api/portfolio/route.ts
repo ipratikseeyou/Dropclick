@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Mock portfolios
-const portfolios: any[] = [];
+interface Portfolio {
+  id: string;
+  title: string;
+  description: string;
+  userId: string;
+  createdAt: string;
+  sections: unknown[];
+  projects: unknown[];
+  skills: unknown[];
+}
+
+const portfolios: Portfolio[] = [];
 
 export async function GET() {
   return NextResponse.json(portfolios);
@@ -18,7 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const portfolio = {
+    const portfolio: Portfolio = {
       id: Date.now().toString(),
       title,
       description: description || '',

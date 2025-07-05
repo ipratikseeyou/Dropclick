@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Mock database (same as register)
-const users: any[] = [];
+interface User {
+  id: string;
+  email: string;
+  password: string;
+  name: string;
+  createdAt: string;
+}
+
+const users: User[] = [];
 
 export async function POST(request: NextRequest) {
   try {

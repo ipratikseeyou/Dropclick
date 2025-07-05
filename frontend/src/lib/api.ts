@@ -1,4 +1,27 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface PortfolioData {
+  title: string;
+  description?: string;
+  userId: string;
+}
+
+interface ApiResponse<T> {
+  message?: string;
+  error?: string;
+  data?: T;
+}
 
 export interface User {
   id: string;
@@ -19,46 +42,62 @@ export interface Portfolio {
 
 export const api = {
   // Auth endpoints
-  auth: {
-    register: async (data: { email: string; password: string; name: string }) => {
-      const response = await fetch(`${API_BASE}/api/auth/register`, {
+  async login(data: LoginData): Promise<ApiResponse<{ user: { id: string; email: string; name: string } }>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
-      return response.json();
-    },
+      return await response.json();
+    } catch (error) {
+      return { error: 'Network error' };
+    }
+  },
 
-    login: async (data: { email: string; password: string }) => {
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
+  async register(data: RegisterData): Promise<ApiResponse<{ user: { id: string; email: string; name: string } }>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
-      return response.json();
-    },
+      return await response.json();
+    } catch (error) {
+      return { error: 'Network error' };
+    }
   },
 
   // Portfolio endpoints
   portfolio: {
     getAll: async (): Promise<Portfolio[]> => {
-      const response = await fetch(`${API_BASE}/api/portfolio`);
+      const response = await fetch(`${API_BASE_URL}/portfolio`);
       return response.json();
     },
 
-    create: async (data: { title: string; description?: string; userId: string }): Promise<Portfolio> => {
-      const response = await fetch(`${API_BASE}/api/portfolio`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      return response.json();
+    async create(data: PortfolioData): Promise<ApiResponse<{ id: string; title: string; description: string; userId: string; createdAt: string }>> {
+      try {
+        const response = await fetch(`${API_BASE_URL}/portfolio`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        return await response.json();
+      } catch (error) {
+        return { error: 'Network error' };
+      }
     },
   },
 
   // Health check
   health: async () => {
-    const response = await fetch(`${API_BASE}/api/health`);
+    const response = await fetch(`${API_BASE_URL}/health`);
     return response.json();
   },
 }; 

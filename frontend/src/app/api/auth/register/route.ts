@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Mock database for now
-const users: any[] = [];
+interface User {
+  id: string;
+  email: string;
+  password: string;
+  name: string;
+  createdAt: string;
+}
+
+const users: User[] = [];
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user (without password hashing for now)
-    const user = {
+    const user: User = {
       id: Date.now().toString(),
       email,
       password, // In production, hash this
