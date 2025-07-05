@@ -13,7 +13,6 @@ import {
   Edit,
   Trash2,
   ExternalLink,
-  LogOut
 } from 'lucide-react';
 
 export default function DashboardPage() {

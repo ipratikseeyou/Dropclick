@@ -35,9 +35,9 @@ export interface Portfolio {
   description: string;
   userId: string;
   createdAt: string;
-  sections: any[];
-  projects: any[];
-  skills: any[];
+  sections: unknown[];
+  projects: unknown[];
+  skills: unknown[];
 }
 
 export const api = {
@@ -52,7 +52,7 @@ export const api = {
         body: JSON.stringify(data),
       });
       return await response.json();
-    } catch (error) {
+    } catch {
       return { error: 'Network error' };
     }
   },
@@ -67,7 +67,22 @@ export const api = {
         body: JSON.stringify(data),
       });
       return await response.json();
-    } catch (error) {
+    } catch {
+      return { error: 'Network error' };
+    }
+  },
+
+  async createPortfolio(data: PortfolioData): Promise<ApiResponse<{ id: string; title: string; description: string; userId: string; createdAt: string }>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/portfolio`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
+    } catch {
       return { error: 'Network error' };
     }
   },
@@ -77,21 +92,6 @@ export const api = {
     getAll: async (): Promise<Portfolio[]> => {
       const response = await fetch(`${API_BASE_URL}/portfolio`);
       return response.json();
-    },
-
-    async create(data: PortfolioData): Promise<ApiResponse<{ id: string; title: string; description: string; userId: string; createdAt: string }>> {
-      try {
-        const response = await fetch(`${API_BASE_URL}/portfolio`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-        return await response.json();
-      } catch (error) {
-        return { error: 'Network error' };
-      }
     },
   },
 
