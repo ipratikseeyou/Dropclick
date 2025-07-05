@@ -14,7 +14,8 @@ export const authController = {
       });
 
       if (existingUser) {
-        return res.status(400).json({ error: 'User already exists' });
+        res.status(400).json({ error: 'User already exists' });
+        return;
       }
 
       // Hash password
@@ -61,14 +62,16 @@ export const authController = {
       });
 
       if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
       }
 
       // Check password
       const isValidPassword = await bcrypt.compare(password, user.password);
 
       if (!isValidPassword) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
       }
 
       // Generate JWT token
@@ -103,7 +106,8 @@ export const authController = {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const user = await prisma.user.findUnique({
@@ -118,7 +122,8 @@ export const authController = {
       });
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: 'User not found' });
+        return;
       }
 
       res.json({ user });
@@ -133,7 +138,8 @@ export const authController = {
       const { token } = req.body;
 
       if (!token) {
-        return res.status(400).json({ error: 'Token required' });
+        res.status(400).json({ error: 'Token required' });
+        return;
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;

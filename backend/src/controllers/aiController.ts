@@ -13,11 +13,13 @@ export const aiController = {
       const { socialData } = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!socialData) {
-        return res.status(400).json({ error: 'Social data required' });
+        res.status(400).json({ error: 'Social data required' });
+        return;
       }
 
       // Create analysis prompt
@@ -75,11 +77,13 @@ export const aiController = {
       const { section, context, template } = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!section || !context) {
-        return res.status(400).json({ error: 'Section and context required' });
+        res.status(400).json({ error: 'Section and context required' });
+        return;
       }
 
       const prompt = `
@@ -127,11 +131,13 @@ export const aiController = {
       const { portfolioData } = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!portfolioData) {
-        return res.status(400).json({ error: 'Portfolio data required' });
+        res.status(400).json({ error: 'Portfolio data required' });
+        return;
       }
 
       const prompt = `
@@ -187,7 +193,8 @@ export const aiController = {
       const { portfolioId } = req.params;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       // Get portfolio data
@@ -203,7 +210,8 @@ export const aiController = {
       });
 
       if (!portfolio) {
-        return res.status(404).json({ error: 'Portfolio not found' });
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
       }
 
       const prompt = `
@@ -246,6 +254,143 @@ export const aiController = {
     } catch (error) {
       console.error('Portfolio optimization error:', error);
       res.status(500).json({ error: 'Failed to optimize portfolio' });
+    }
+  },
+
+  async enhanceSection(req: Request, res: Response) {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { section, context } = req.body;
+
+      if (!section || !context) {
+        res.status(400).json({ error: 'Section and context required' });
+        return;
+      }
+
+      // TODO: Integrate with OpenAI API for section enhancement
+      const enhancedSection = {
+        ...section,
+        content: `AI-enhanced content for ${section.type} section`,
+        improved: true
+      };
+
+      res.json({ section: enhancedSection });
+    } catch (error) {
+      console.error('Enhance section error:', error);
+      res.status(500).json({ error: 'Failed to enhance section' });
+    }
+  },
+
+  async analyzeSocialProfile(req: Request, res: Response) {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { portfolioData } = req.body;
+
+      if (!portfolioData) {
+        res.status(400).json({ error: 'Portfolio data required' });
+        return;
+      }
+
+      // TODO: Integrate with AI analysis
+      const analysis = {
+        strengths: ['Strong technical skills', 'Good project variety'],
+        improvements: ['Add more detailed descriptions', 'Include metrics'],
+        suggestions: [
+          'Add more recent projects',
+          'Include testimonials',
+          'Add a blog section'
+        ],
+        score: 85
+      };
+
+      res.json({ analysis });
+    } catch (error) {
+      console.error('Analyze profile error:', error);
+      res.status(500).json({ error: 'Failed to analyze profile' });
+    }
+  },
+
+  async generatePortfolioContent(req: Request, res: Response) {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { portfolioId } = req.params;
+
+      const portfolio = await prisma.portfolio.findFirst({
+        where: { 
+          id: portfolioId,
+          userId 
+        },
+        include: {
+          socialConnections: true,
+          sections: true
+        }
+      });
+
+      if (!portfolio) {
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
+      }
+
+      // TODO: Integrate with OpenAI API for comprehensive portfolio generation
+      const generatedContent = {
+        about: 'AI-generated professional about section',
+        skills: [
+          { name: 'JavaScript', level: 'Advanced' },
+          { name: 'React', level: 'Advanced' },
+          { name: 'Node.js', level: 'Intermediate' },
+          { name: 'TypeScript', level: 'Intermediate' }
+        ],
+        experience: [
+          {
+            title: 'Full Stack Developer',
+            company: 'Tech Startup',
+            duration: '2021 - Present',
+            description: 'AI-generated experience description with achievements',
+            technologies: ['React', 'Node.js', 'PostgreSQL']
+          }
+        ],
+        projects: [
+          {
+            name: 'AI Portfolio Builder',
+            description: 'AI-generated detailed project description',
+            technologies: ['Next.js', 'OpenAI API', 'Prisma'],
+            url: 'https://github.com/example/ai-portfolio-builder',
+            highlights: ['Automated content generation', 'Social media integration']
+          }
+        ],
+        recommendations: [
+          'Add more visual elements',
+          'Include client testimonials',
+          'Add a contact form'
+        ]
+      };
+
+      res.json({ 
+        portfolioId,
+        content: generatedContent,
+        message: 'Portfolio content generated successfully'
+      });
+    } catch (error) {
+      console.error('Generate portfolio content error:', error);
+      res.status(500).json({ error: 'Failed to generate portfolio content' });
     }
   }
 }; 

@@ -3,17 +3,19 @@ import axios from 'axios';
 import { prisma } from '../index';
 
 export const socialController = {
-  async getGitHubProfile(req: Request, res: Response) {
+  async getGitHubProfile(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const { username } = req.query;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!username) {
-        return res.status(400).json({ error: 'GitHub username required' });
+        res.status(400).json({ error: 'GitHub username required' });
+        return;
       }
 
       // Fetch GitHub profile
@@ -34,17 +36,19 @@ export const socialController = {
     }
   },
 
-  async getGitHubRepos(req: Request, res: Response) {
+  async getGitHubRepos(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const { username } = req.query;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!username) {
-        return res.status(400).json({ error: 'GitHub username required' });
+        res.status(400).json({ error: 'GitHub username required' });
+        return;
       }
 
       const response = await axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=20`);
@@ -57,12 +61,13 @@ export const socialController = {
     }
   },
 
-  async getLinkedInProfile(req: Request, res: Response) {
+  async getLinkedInProfile(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       // TODO: Implement LinkedIn API integration
@@ -78,17 +83,19 @@ export const socialController = {
     }
   },
 
-  async getTwitterProfile(req: Request, res: Response) {
+  async getTwitterProfile(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const { username } = req.query;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       if (!username) {
-        return res.status(400).json({ error: 'Twitter username required' });
+        res.status(400).json({ error: 'Twitter username required' });
+        return;
       }
 
       // TODO: Implement Twitter API integration
@@ -104,14 +111,15 @@ export const socialController = {
     }
   },
 
-  async connectPlatform(req: Request, res: Response) {
+  async connectPlatform(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const { platform } = req.params;
       const { accessToken, profileData } = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       // Save social connection
@@ -145,13 +153,14 @@ export const socialController = {
     }
   },
 
-  async disconnectPlatform(req: Request, res: Response) {
+  async disconnectPlatform(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const { platform } = req.params;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       await prisma.socialConnection.delete({
@@ -169,6 +178,204 @@ export const socialController = {
     } catch (error) {
       console.error('Disconnect platform error:', error);
       res.status(500).json({ error: 'Failed to disconnect platform' });
+    }
+  },
+
+  async connectGitHub(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { username } = req.body;
+
+      if (!username) {
+        res.status(400).json({ error: 'GitHub username required' });
+        return;
+      }
+
+      // TODO: Fetch GitHub data using GitHub API
+      const githubData = {
+        username,
+        repos: 25,
+        followers: 150,
+        bio: 'Full-stack developer passionate about AI and web technologies',
+        avatar: `https://github.com/${username}.png`
+      };
+
+      const socialConnection = await prisma.socialConnection.upsert({
+        where: {
+          userId_platform: {
+            userId,
+            platform: 'github'
+          }
+        },
+        update: {
+          username,
+          data: githubData
+        },
+        create: {
+          userId,
+          platform: 'github',
+          username,
+          data: githubData
+        }
+      });
+
+      res.json({ socialConnection });
+    } catch (error) {
+      console.error('Connect GitHub error:', error);
+      res.status(500).json({ error: 'Failed to connect GitHub' });
+    }
+  },
+
+  async getGitHubData(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { username } = req.params;
+
+      if (!username) {
+        res.status(400).json({ error: 'GitHub username required' });
+        return;
+      }
+
+      // TODO: Fetch real GitHub data using GitHub API
+      const githubData = {
+        username,
+        repos: [
+          {
+            name: 'ai-portfolio-builder',
+            description: 'AI-powered portfolio generation service',
+            language: 'TypeScript',
+            stars: 45,
+            forks: 12
+          },
+          {
+            name: 'react-dashboard',
+            description: 'Modern React dashboard with TypeScript',
+            language: 'TypeScript',
+            stars: 23,
+            forks: 8
+          }
+        ],
+        profile: {
+          bio: 'Full-stack developer passionate about AI and web technologies',
+          location: 'San Francisco, CA',
+          company: 'Tech Startup',
+          blog: 'https://example.com',
+          twitter: '@username'
+        }
+      };
+
+      res.json({ githubData });
+    } catch (error) {
+      console.error('Get GitHub data error:', error);
+      res.status(500).json({ error: 'Failed to get GitHub data' });
+    }
+  },
+
+  async getSocialConnections(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const connections = await prisma.socialConnection.findMany({
+        where: { userId }
+      });
+
+      res.json({ connections });
+    } catch (error) {
+      console.error('Get social connections error:', error);
+      res.status(500).json({ error: 'Failed to get social connections' });
+    }
+  },
+
+  async connectTwitter(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { username } = req.body;
+
+      if (!username) {
+        res.status(400).json({ error: 'Twitter username required' });
+        return;
+      }
+
+      // TODO: Fetch Twitter data using Twitter API
+      const twitterData = {
+        username,
+        followers: 1200,
+        following: 500,
+        tweets: 850,
+        bio: 'Tech enthusiast | Full-stack developer | AI/ML practitioner'
+      };
+
+      const socialConnection = await prisma.socialConnection.upsert({
+        where: {
+          userId_platform: {
+            userId,
+            platform: 'twitter'
+          }
+        },
+        update: {
+          username,
+          data: twitterData
+        },
+        create: {
+          userId,
+          platform: 'twitter',
+          username,
+          data: twitterData
+        }
+      });
+
+      res.json({ socialConnection });
+    } catch (error) {
+      console.error('Connect Twitter error:', error);
+      res.status(500).json({ error: 'Failed to connect Twitter' });
+    }
+  },
+
+  async disconnectSocial(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { platform } = req.params;
+
+      await prisma.socialConnection.deleteMany({
+        where: {
+          userId,
+          platform
+        }
+      });
+
+      res.json({ message: `${platform} disconnected successfully` });
+    } catch (error) {
+      console.error('Disconnect social error:', error);
+      res.status(500).json({ error: 'Failed to disconnect social account' });
     }
   }
 }; 

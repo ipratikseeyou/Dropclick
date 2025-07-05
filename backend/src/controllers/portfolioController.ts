@@ -7,7 +7,8 @@ export const portfolioController = {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolios = await prisma.portfolio.findMany({
@@ -31,7 +32,8 @@ export const portfolioController = {
       const { title, description, template } = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolio = await prisma.portfolio.create({
@@ -59,7 +61,8 @@ export const portfolioController = {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolio = await prisma.portfolio.findFirst({
@@ -74,7 +77,8 @@ export const portfolioController = {
       });
 
       if (!portfolio) {
-        return res.status(404).json({ error: 'Portfolio not found' });
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
       }
 
       res.json({ portfolio });
@@ -91,7 +95,8 @@ export const portfolioController = {
       const updateData = req.body;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolio = await prisma.portfolio.findFirst({
@@ -102,7 +107,8 @@ export const portfolioController = {
       });
 
       if (!portfolio) {
-        return res.status(404).json({ error: 'Portfolio not found' });
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
       }
 
       const updatedPortfolio = await prisma.portfolio.update({
@@ -126,7 +132,8 @@ export const portfolioController = {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolio = await prisma.portfolio.findFirst({
@@ -137,7 +144,8 @@ export const portfolioController = {
       });
 
       if (!portfolio) {
-        return res.status(404).json({ error: 'Portfolio not found' });
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
       }
 
       await prisma.portfolio.delete({
@@ -157,7 +165,8 @@ export const portfolioController = {
       const userId = (req as any).user?.userId;
 
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const portfolio = await prisma.portfolio.findFirst({
@@ -171,7 +180,8 @@ export const portfolioController = {
       });
 
       if (!portfolio) {
-        return res.status(404).json({ error: 'Portfolio not found' });
+        res.status(404).json({ error: 'Portfolio not found' });
+        return;
       }
 
       // TODO: Implement AI portfolio generation logic
