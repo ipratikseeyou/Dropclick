@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 interface SocialProfile {
   platform: 'github' | 'linkedin' | 'twitter';
   username: string;
-  data?: any;
+  data?: unknown;
 }
 
 interface AnalysisRequest {
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
 async function performAIAnalysis(
   profiles: SocialProfile[], 
-  preferences: any, 
+  preferences: AnalysisRequest['preferences'], 
   apiKey: string
 ): Promise<{
   summary: string;
@@ -187,14 +187,14 @@ Make the content professional, engaging, and tailored to the specified tone and 
 }
 
 // Fallback mock analysis function
-async function generateMockAnalysis(profiles: SocialProfile[], preferences: any) {
+async function generateMockAnalysis(profiles: SocialProfile[], preferences: AnalysisRequest['preferences']) {
   const githubProfile = profiles.find(p => p.platform === 'github');
   const linkedinProfile = profiles.find(p => p.platform === 'linkedin');
   const twitterProfile = profiles.find(p => p.platform === 'twitter');
 
   let summary = '';
-  let skills: string[] = [];
-  let recommendations: string[] = [];
+  const skills: string[] = [];
+  const recommendations: string[] = [];
 
   if (githubProfile) {
     skills.push('JavaScript', 'TypeScript', 'React', 'Node.js', 'Git');

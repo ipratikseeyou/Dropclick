@@ -56,7 +56,6 @@ export default function AIGeneratePage() {
     length: 'medium'
   });
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleProfileChange = (platform: 'github' | 'linkedin' | 'twitter', username: string) => {
     setProfiles(prev => prev.map(p => 
@@ -71,7 +70,6 @@ export default function AIGeneratePage() {
   };
 
   const handleAnalyze = async () => {
-    setIsAnalyzing(true);
     setStep('analyzing');
 
     try {
@@ -102,8 +100,6 @@ export default function AIGeneratePage() {
       console.error('Analysis error:', error);
       alert('Network error. Please check your connection.');
       setStep('preferences');
-    } finally {
-      setIsAnalyzing(false);
     }
   };
 
