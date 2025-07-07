@@ -13,7 +13,12 @@ import {
   Edit,
   Trash2,
   ExternalLink,
+  Instagram,
+  Facebook,
+  Youtube,
+  Link
 } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 export default function DashboardPage() {
   const [portfolios] = useState([
@@ -40,7 +45,12 @@ export default function DashboardPage() {
   const [socialConnections] = useState([
     { platform: 'github', connected: true, username: 'johndoe' },
     { platform: 'linkedin', connected: false, username: null },
-    { platform: 'twitter', connected: false, username: null }
+    { platform: 'X', connected: false, username: null },
+    { platform: 'instagram', connected: false, username: null },
+    { platform: 'facebook', connected: false, username: null },
+    { platform: 'reddit', connected: false, username: null },
+    { platform: 'linktree', connected: false, username: null },
+    { platform: 'youtube_community', connected: false, username: null }
   ]);
 
   return (
@@ -58,7 +68,7 @@ export default function DashboardPage() {
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/' })}>
                 Sign Out
               </Button>
             </div>
@@ -96,10 +106,15 @@ export default function DashboardPage() {
                   <div className="flex items-center space-x-3">
                     {connection.platform === 'github' && <Github className="h-5 w-5" />}
                     {connection.platform === 'linkedin' && <Linkedin className="h-5 w-5" />}
-                    {connection.platform === 'twitter' && <Twitter className="h-5 w-5" />}
+                    {connection.platform === 'X' && <Twitter className="h-5 w-5" />}
+                    {connection.platform === 'instagram' && <Instagram className="h-5 w-5 text-pink-500" />}
+                    {connection.platform === 'facebook' && <Facebook className="h-5 w-5 text-blue-700" />}
+                    {connection.platform === 'reddit' && <Edit className="h-5 w-5 text-orange-500" />}
+                    {connection.platform === 'linktree' && <Link className="h-5 w-5 text-green-600" />}
+                    {connection.platform === 'youtube_community' && <Youtube className="h-5 w-5 text-red-600" />}
                     <div>
                       <p className="font-medium text-gray-900 capitalize">
-                        {connection.platform}
+                        {connection.platform === 'youtube_community' ? 'Youtube Community' : connection.platform === 'linktree' ? 'Linktree' : connection.platform}
                       </p>
                       <p className="text-sm text-gray-500">
                         {connection.connected ? connection.username : 'Not connected'}
