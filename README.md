@@ -1,4 +1,4 @@
-# AI Portfolio Builder 🚀
+# kaffeehai 🚀
 
 An AI-powered portfolio generation service that automatically builds and maintains professional portfolios from your social profiles.
 

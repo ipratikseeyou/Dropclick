@@ -1,6 +1,6 @@
-# AI Portfolio Builder - Next Steps & Development Roadmap 🚀
+# kaffeehai - Next Steps & Development Roadmap 🚀
 
-Congratulations! You now have a fully functional MVP of the AI Portfolio Builder. Here's what we've built and what to do next.
+Congratulations! You now have a fully functional MVP of kaffeehai. Here's what we've built and what to do next.
 
 ## 🎉 What We've Accomplished
 
