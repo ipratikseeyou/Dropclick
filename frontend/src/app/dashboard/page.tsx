@@ -63,7 +63,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
               <Sparkles className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">AI Portfolio Builder</span>
+              <span className="text-xl font-bold text-gray-900">kaffeehai</span>
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm">

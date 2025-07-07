@@ -139,7 +139,7 @@ export default function AIGeneratePage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="h-8 w-8 text-blue-600 mr-2" />
-            <h1 className="text-3xl font-bold text-gray-900">AI Portfolio Generator</h1>
+            <h1 className="text-3xl font-bold text-gray-900">kaffeehai</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Connect your social profiles and let AI create a stunning professional portfolio

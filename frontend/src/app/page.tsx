@@ -10,7 +10,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Sparkles className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">AI Portfolio Builder</span>
+            <span className="text-xl font-bold text-gray-900">kaffeehai</span>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="#features" className="text-gray-600 hover:text-gray-900">Features</Link>
@@ -86,7 +86,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose AI Portfolio Builder?
+              Why Choose kaffeehai?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Professional portfolios built automatically from your social profiles
@@ -246,7 +246,7 @@ export default function HomePage() {
             Ready to Build Your Portfolio?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of professionals who are already using AI Portfolio Builder 
+            Join thousands of professionals who are already using kaffeehai 
             to showcase their work and advance their careers.
           </p>
           <Link href="/auth/register">
@@ -265,7 +265,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Sparkles className="h-6 w-6 text-blue-400" />
-                <span className="text-lg font-bold">AI Portfolio Builder</span>
+                <span className="text-lg font-bold">kaffeehai</span>
               </div>
               <p className="text-gray-400">
                 Professional portfolios built automatically from your social profiles.
@@ -301,7 +301,7 @@ export default function HomePage() {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 AI Portfolio Builder. All rights reserved.</p>
+            <p>&copy; 2024 kaffeehai. All rights reserved.</p>
           </div>
         </div>
       </footer>
