@@ -1,8 +1,8 @@
-# kaffeehai 🚀
+# kaffeehai 
 
 An AI-powered portfolio generation service that automatically builds and maintains professional portfolios from your social profiles.
 
-## 🎯 Features
+## Features
 
 - **AI-Powered Portfolio Generation**: Automatically creates professional portfolios from social media data
 - **Multi-Platform Integration**: GitHub, LinkedIn, Twitter/X support
@@ -29,7 +29,7 @@ An AI-powered portfolio generation service that automatically builds and maintai
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Backend**: Node.js, Express, TypeScript
@@ -38,7 +38,7 @@ An AI-powered portfolio generation service that automatically builds and maintai
 - **Authentication**: NextAuth.js
 - **Deployment**: Vercel + Railway
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -95,7 +95,7 @@ cd ../backend
 npm run dev
 ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ai-portfolio-builder/
@@ -114,14 +114,14 @@ ai-portfolio-builder/
 └── docs/                    # Documentation
 ```
 
-## 🎨 Portfolio Templates
+##  Portfolio Templates
 
 - **Modern Minimal**: Clean, professional design
 - **Creative Developer**: Showcase technical skills
 - **Business Professional**: Corporate-friendly layout
 - **Creative Portfolio**: Artistic and creative focus
 
-## 🔄 Development Workflow
+## Development Workflow
 
 1. **Social Integration**: Connect social media accounts
 2. **Data Collection**: Fetch and analyze social data
@@ -130,7 +130,7 @@ ai-portfolio-builder/
 5. **Customization**: Allow user editing
 6. **Deployment**: Generate and host portfolio
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -138,10 +138,10 @@ ai-portfolio-builder/
 4. Add tests
 5. Submit a pull request
 
-## 📄 License
+##  License
 
 MIT License - see LICENSE file for details
 
-## 🆘 Support
+## Support
 
 For support, email support@aiportfoliobuilder.com or create an issue in this repository. 
