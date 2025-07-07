@@ -13,13 +13,19 @@ import {
   ArrowRight,
   Settings,
   FileText,
-  Star
+  Star,
+  Instagram,
+  Facebook,
+  Youtube,
+  Link,
+  Edit
 } from 'lucide-react';
 
 interface SocialProfile {
-  platform: 'github' | 'linkedin' | 'twitter';
+  platform: 'github' | 'linkedin' | 'X' | 'instagram' | 'facebook' | 'reddit' | 'linktree' | 'youtube_community';
   username: string;
   connected: boolean;
+  post: boolean;
 }
 
 interface AIPreferences {
@@ -46,9 +52,14 @@ export default function AIGeneratePage() {
   const router = useRouter();
   const [step, setStep] = useState<'connect' | 'preferences' | 'analyzing' | 'results'>('connect');
   const [profiles, setProfiles] = useState<SocialProfile[]>([
-    { platform: 'github', username: '', connected: false },
-    { platform: 'linkedin', username: '', connected: false },
-    { platform: 'twitter', username: '', connected: false }
+    { platform: 'github', username: '', connected: false, post: false },
+    { platform: 'linkedin', username: '', connected: false, post: false },
+    { platform: 'X', username: '', connected: false, post: false },
+    { platform: 'instagram', username: '', connected: false, post: false },
+    { platform: 'facebook', username: '', connected: false, post: false },
+    { platform: 'reddit', username: '', connected: false, post: false },
+    { platform: 'linktree', username: '', connected: false, post: false },
+    { platform: 'youtube_community', username: '', connected: false, post: false },
   ]);
   const [preferences, setPreferences] = useState<AIPreferences>({
     tone: 'professional',
@@ -56,13 +67,25 @@ export default function AIGeneratePage() {
     length: 'medium'
   });
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
+  const [allAccounts, setAllAccounts] = useState(false);
 
-  const handleProfileChange = (platform: 'github' | 'linkedin' | 'twitter', username: string) => {
+  const handleProfileChange = (platform: SocialProfile['platform'], username: string) => {
     setProfiles(prev => prev.map(p => 
       p.platform === platform 
         ? { ...p, username, connected: username.length > 0 }
         : p
     ));
+  };
+
+  const handlePostCheckbox = (platform: SocialProfile['platform'], checked: boolean) => {
+    setProfiles(prev => prev.map(p =>
+      p.platform === platform ? { ...p, post: checked } : p
+    ));
+  };
+
+  const handleAllAccounts = (checked: boolean) => {
+    setAllAccounts(checked);
+    setProfiles(prev => prev.map(p => ({ ...p, post: checked })));
   };
 
   const handlePreferenceChange = (key: keyof AIPreferences, value: string) => {
@@ -156,26 +179,51 @@ export default function AIGeneratePage() {
               <p className="text-gray-600 mb-6">
                 Connect your social profiles to help AI understand your background and generate relevant content.
               </p>
-              
+              <div className="mb-4 flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="all-accounts"
+                  checked={allAccounts}
+                  onChange={e => handleAllAccounts(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                />
+                <label htmlFor="all-accounts" className="text-sm font-medium text-gray-700">
+                  All accounts
+                </label>
+              </div>
               <div className="space-y-4">
                 {profiles.map((profile) => (
                   <div key={profile.platform} className="flex items-center space-x-4 p-4 border rounded-lg">
                     <div className="flex-shrink-0">
                       {profile.platform === 'github' && <Github className="h-6 w-6 text-gray-900" />}
                       {profile.platform === 'linkedin' && <Linkedin className="h-6 w-6 text-blue-600" />}
-                      {profile.platform === 'twitter' && <Twitter className="h-6 w-6 text-blue-400" />}
+                      {profile.platform === 'X' && <Twitter className="h-6 w-6 text-blue-400" />}
+                      {profile.platform === 'instagram' && <Instagram className="h-6 w-6 text-pink-500" />}
+                      {profile.platform === 'facebook' && <Facebook className="h-6 w-6 text-blue-700" />}
+                      {profile.platform === 'reddit' && <Edit className="h-6 w-6 text-orange-500" />}
+                      {profile.platform === 'linktree' && <Link className="h-6 w-6 text-green-600" />}
+                      {profile.platform === 'youtube_community' && <Youtube className="h-6 w-6 text-red-600" />}
                     </div>
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
-                        {profile.platform} Username
+                        {profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform.charAt(0).toUpperCase() + profile.platform.slice(1)} Username
                       </label>
                       <input
                         type="text"
-                        placeholder={`Enter your ${profile.platform} username`}
+                        placeholder={`Enter your ${profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform} username`}
                         value={profile.username}
                         onChange={(e) => handleProfileChange(profile.platform, e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={profile.post}
+                        onChange={e => handlePostCheckbox(profile.platform, e.target.checked)}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                      />
+                      <span className="text-xs text-gray-600">Post</span>
                     </div>
                     <div className="flex-shrink-0">
                       {profile.connected && <CheckCircle className="h-5 w-5 text-green-500" />}
@@ -183,7 +231,6 @@ export default function AIGeneratePage() {
                   </div>
                 ))}
               </div>
-
               <div className="mt-6">
                 <Button
                   onClick={() => setStep('preferences')}
