@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 interface SocialProfile {
-  platform: 'github' | 'linkedin' | 'X' | 'instagram' | 'facebook' | 'reddit' | 'linktree' | 'youtube_community';
+  platform: 'github' | 'linkedin' | 'X' | 'instagram' | 'facebook' | 'reddit' | 'linktree' | 'youtube_community' | 'snapchat';
   username: string;
   connected: boolean;
   post: boolean;
@@ -60,6 +60,7 @@ export default function AIGeneratePage() {
     { platform: 'reddit', username: '', connected: false, post: false },
     { platform: 'linktree', username: '', connected: false, post: false },
     { platform: 'youtube_community', username: '', connected: false, post: false },
+    { platform: 'snapchat', username: '', connected: false, post: false },
   ]);
   const [preferences, setPreferences] = useState<AIPreferences>({
     tone: 'professional',
@@ -203,14 +204,15 @@ export default function AIGeneratePage() {
                       {profile.platform === 'reddit' && <Edit className="h-6 w-6 text-orange-500" />}
                       {profile.platform === 'linktree' && <Link className="h-6 w-6 text-green-600" />}
                       {profile.platform === 'youtube_community' && <Youtube className="h-6 w-6 text-red-600" />}
+                      {profile.platform === 'snapchat' && <Star className="h-6 w-6 text-yellow-500" />}
                     </div>
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
-                        {profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform.charAt(0).toUpperCase() + profile.platform.slice(1)} Username
+                        {profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform === 'snapchat' ? 'Snapchat' : profile.platform.charAt(0).toUpperCase() + profile.platform.slice(1)} Username
                       </label>
                       <input
                         type="text"
-                        placeholder={`Enter your ${profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform} username`}
+                        placeholder={`Enter your ${profile.platform === 'youtube_community' ? 'Youtube Community' : profile.platform === 'linktree' ? 'Linktree' : profile.platform === 'snapchat' ? 'Snapchat' : profile.platform} username`}
                         value={profile.username}
                         onChange={(e) => handleProfileChange(profile.platform, e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"

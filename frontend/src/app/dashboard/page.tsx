@@ -16,7 +16,8 @@ import {
   Instagram,
   Facebook,
   Youtube,
-  Link
+  Link,
+  Star
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -50,7 +51,8 @@ export default function DashboardPage() {
     { platform: 'facebook', connected: false, username: null },
     { platform: 'reddit', connected: false, username: null },
     { platform: 'linktree', connected: false, username: null },
-    { platform: 'youtube_community', connected: false, username: null }
+    { platform: 'youtube_community', connected: false, username: null },
+    { platform: 'snapchat', connected: false, username: null },
   ]);
 
   return (
@@ -112,9 +114,10 @@ export default function DashboardPage() {
                     {connection.platform === 'reddit' && <Edit className="h-5 w-5 text-orange-500" />}
                     {connection.platform === 'linktree' && <Link className="h-5 w-5 text-green-600" />}
                     {connection.platform === 'youtube_community' && <Youtube className="h-5 w-5 text-red-600" />}
+                    {connection.platform === 'snapchat' && <Star className="h-5 w-5 text-yellow-500" />}
                     <div>
                       <p className="font-medium text-gray-900 capitalize">
-                        {connection.platform === 'youtube_community' ? 'Youtube Community' : connection.platform === 'linktree' ? 'Linktree' : connection.platform}
+                        {connection.platform === 'youtube_community' ? 'Youtube Community' : connection.platform === 'linktree' ? 'Linktree' : connection.platform === 'snapchat' ? 'Snapchat' : connection.platform}
                       </p>
                       <p className="text-sm text-gray-500">
                         {connection.connected ? connection.username : 'Not connected'}
